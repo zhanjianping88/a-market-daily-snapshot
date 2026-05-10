@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SKILL_DIR="/Users/jianping/.codex/skills/hhxg-market/scripts"
+LOCAL_HOME="/Users/jianping/a-market/.hhxg-home"
+CACHE_DIR="${LOCAL_HOME}/.cache/hhxg-market"
+YEAR="$(date +%Y)"
+MONTH="$(date +%Y-%m)"
+
+if [[ ! -d "$SKILL_DIR" ]]; then
+  echo "未找到已安装的 hhxg-market skill: $SKILL_DIR" >&2
+  exit 1
+fi
+
+mkdir -p "$CACHE_DIR"
+
+refresh_cache() {
+  local url="$1"
+  local file="$2"
+  /usr/bin/curl -sS -L "$url" -o "${CACHE_DIR}/${file}"
+}
+
+cmd="${1:-snapshot}"
+shift || true
+
+case "$cmd" in
+  snapshot)
+    refresh_cache "https://hhxg.top/static/data/assistant/skill_snapshot.json" "last.json"
+    exec env HOME="$LOCAL_HOME" python3 "$SKILL_DIR/fetch_snapshot.py" "$@"
+    ;;
+  calendar)
+    local_section="${1:-week}"
+    case "$local_section" in
+      trading|week)
+        refresh_cache "https://hhxg.top/static/data/calendar/trading_days_${YEAR}.json" "trading_days.json"
+        refresh_cache "https://hhxg.top/static/data/calendar/unlock_${MONTH/-/}.json" "unlock_${MONTH}.json" || true
+        refresh_cache "https://hhxg.top/static/data/calendar/earnings_${MONTH/-/}.json" "earnings_${MONTH}.json" || true
+        refresh_cache "https://hhxg.top/static/data/calendar/delivery_${YEAR}.json" "delivery_${YEAR}.json" || true
+        ;;
+      unlock)
+        target_month="${2:-$MONTH}"
+        refresh_cache "https://hhxg.top/static/data/calendar/unlock_${target_month/-/}.json" "unlock_${target_month}.json"
+        ;;
+      earnings)
+        target_month="${2:-$MONTH}"
+        refresh_cache "https://hhxg.top/static/data/calendar/earnings_${target_month/-/}.json" "earnings_${target_month}.json"
+        ;;
+      delivery)
+        refresh_cache "https://hhxg.top/static/data/calendar/delivery_${YEAR}.json" "delivery_${YEAR}.json"
+        ;;
+    esac
+    exec env HOME="$LOCAL_HOME" python3 "$SKILL_DIR/calendar.py" "$@"
+    ;;
+  margin)
+    refresh_cache "https://hhxg.top/static/data/assistant/recent_margin_7d.json" "margin_7d.json"
+    exec env HOME="$LOCAL_HOME" python3 "$SKILL_DIR/margin.py" "$@"
+    ;;
+  news)
+    refresh_cache "https://hhxg.top/static/data/news/n0.json" "news_latest.json"
+    exec env HOME="$LOCAL_HOME" python3 "$SKILL_DIR/news.py" "$@"
+    ;;
+  *)
+    echo "用法:"
+    echo "  ./hhxg snapshot [summary|market|themes|ladder|hotmoney|sectors|news] [--json]"
+    echo "  ./hhxg calendar [week|trading|unlock|earnings|delivery] [...]"
+    echo "  ./hhxg margin [overview|top] [--json]"
+    echo "  ./hhxg news [limit] [--json]"
+    exit 1
+    ;;
+esac
