@@ -34,10 +34,16 @@
       background: linear-gradient(135deg, rgba(27,53,87,.96), rgba(19,78,94,.92));
       box-shadow: var(--shadow);
     }
+    .hero-top { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; flex-wrap:wrap; }
     .eyebrow {
       display: inline-flex; gap: 10px; align-items: center; padding: 8px 14px;
       border: 1px solid rgba(255,255,255,.18); border-radius: 999px; font-size: 13px;
       letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.82);
+    }
+    .nav-link {
+      display:inline-flex; align-items:center; padding:11px 14px; border-radius:14px;
+      color:#fff; text-decoration:none; font-size:14px; font-weight:700;
+      background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12);
     }
     h1 { margin: 18px 0 10px; font-size: clamp(36px, 6vw, 68px); line-height: .98; letter-spacing: -.04em; }
     .hero-grid { display: grid; grid-template-columns: 1.45fr .95fr; gap: 26px; margin-top: 18px; align-items: end; }
@@ -98,8 +104,13 @@
 <body>
   <div class="shell">
     <section class="hero">
-      <div class="eyebrow">A股每日市场快照 · 最近交易日 2026-05-08</div>
-      <h1>赚钱效应 68.3%（强）<br>军工装备、汽车零部件、消费电子 方向资金集中</h1>
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">A股每日市场快照 · 最近交易日 2026-05-08</div>
+          <h1>赚钱效应 68.3%（强）<br>军工装备、汽车零部件、消费电子 方向资金集中</h1>
+        </div>
+        <a class="nav-link" href="./realtime.html">查看实时面板</a>
+      </div>
       <div class="hero-grid">
         <div class="summary">赚钱效应 68.3%（强），军工装备、汽车零部件、消费电子 方向资金集中，通信技术、F5G概念、算力租赁 等题材活跃，游资净买入 34亿，烽火通信领涨</div>
         <div class="hero-side">
@@ -108,7 +119,7 @@
             <div class="metric-chip"><span class="label">炸板</span><strong>36</strong></div>
             <div class="metric-chip"><span class="label">跌停</span><strong>2</strong></div>
           </div>
-          <div class="hero-note"><span class="label">更新</span>2026-05-11 13:10:20</div>
+          <div class="hero-note"><span class="label">更新</span>2026-05-09 10:10:19</div>
         </div>
       </div>
     </section>
@@ -205,7 +216,7 @@
           </div>
           <div class="ladder-level">
             <div class="board"><strong>3</strong><span>4 只晋级</span></div>
-            <div class="board-list">波导股份 / 大业股份 / 杭电股份 / 大唐发电</div>
+            <div class="board-list">波导股份 / 大业股份 / 大唐发电 / 杭电股份</div>
           </div>
         </div>
       </article>
@@ -227,30 +238,30 @@
         <div class="news-list">
           
           <div class="news-item">
-            <div class="news-meta">2026-05-11 · 13: · 市场</div>
-            【两融风控再升级 多家券商增设“即时平仓线”，部分要求半天完成补仓】在A股两融余额创下历史新高的背景下，券商风控体系正迎来新一轮升级。近日，东方证券（60095…
+            <div class="news-meta">2026-05-09 · 10: · 市场</div>
+            【2026年一季度我国黄金产量81.065吨，同比下降7.08%】据中国黄金协会最新统计数据显示：2026年一季度，国内原料产金81.065吨，同比减少6.17…
           </div>
 
           <div class="news-item">
-            <div class="news-meta">2026-05-11 · 13: · 市场</div>
-            【美诺华触及跌停】美诺华触及跌停，成交额25.53亿元。
+            <div class="news-meta">2026-05-09 · 09: · 市场</div>
+            老庙黄金足金饰品报1442元/克，较前一日1435元/克涨7元。
           </div>
 
           <div class="news-item">
-            <div class="news-meta">2026-05-11 · 12: · 市场</div>
-            【上交所：景顺长城全球半导体芯片产业股票型证券投资基金（QDII-LOF）临时停牌】上交所发布景顺长城全球半导体芯片产业股票型证券投资基金（QDII-LOF）临…
+            <div class="news-meta">2026-05-09 · 09: · 市场</div>
+            【大摩：半导体行业涨势尚未见顶，上调IonQ、微芯科技及格芯的目标价】摩根士丹利发布报告，即使iShares半导体ETF(SOXX-US)在2026年迄今已大幅…
           </div>
 
           <div class="news-item">
-            <div class="news-meta">2026-05-11 · 12: · 市场</div>
-            【MPOB：马来西亚4月棕榈油期末库存为231万吨，较3月上涨1.71%】马来西亚棕榈油局（MPOB）数据显示，马来西亚4月棕榈油出口量为130万吨，较3月下降…
+            <div class="news-meta">2026-05-09 · 09: · 数据</div>
+            【惠而浦公司：中东战事令美家电行业“衰退级别下跌”】美国家电品牌惠而浦公司在近日公布的一季度财报中说，美以对伊朗发动的战争已导致美国家电行业出现“衰退级别的下跌…
           </div>
         </div>
       </article>
     </section>
 
     <div class="foot">
-      数据日期：2026-05-08（最近交易日） · 更新时间：2026-05-11 13:10:20
+      数据日期：2026-05-08（最近交易日） · 更新时间：2026-05-09 10:10:19
     </div>
   </div>
 </body>

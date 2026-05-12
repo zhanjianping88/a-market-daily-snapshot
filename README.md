@@ -7,6 +7,7 @@
 ## 功能
 
 - 每日抓取最新市场快照数据
+- 实时拉取盘中快讯，生成实时数据面板
 - 生成美观的单页 HTML 日报
 - 自动保留按交易日归档的历史页面
 - 自动更新 `market-snapshot-latest.html`
@@ -25,6 +26,10 @@ python3 generate_market_snapshot.py
 - `market-snapshot-latest.html`
 - `market-snapshot-YYYY-MM-DD.html`
 
+实时面板：
+
+- `realtime.html`
+
 ## 自动更新
 
 仓库内置 GitHub Actions：
@@ -41,6 +46,7 @@ python3 generate_market_snapshot.py
 
 - `generate_market_snapshot.py`：生成日报页面
 - `index.html`：GitHub Pages 首页
+- `realtime.html`：实时数据面板
 - `market-snapshot-latest.html`：最新日报
 - `market-snapshot-*.html`：按日期归档
 

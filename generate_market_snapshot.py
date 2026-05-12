@@ -186,10 +186,16 @@ def render(snapshot: dict) -> str:
       background: linear-gradient(135deg, rgba(27,53,87,.96), rgba(19,78,94,.92));
       box-shadow: var(--shadow);
     }}
+    .hero-top {{ display:flex; justify-content:space-between; gap:18px; align-items:flex-start; flex-wrap:wrap; }}
     .eyebrow {{
       display: inline-flex; gap: 10px; align-items: center; padding: 8px 14px;
       border: 1px solid rgba(255,255,255,.18); border-radius: 999px; font-size: 13px;
       letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.82);
+    }}
+    .nav-link {{
+      display:inline-flex; align-items:center; padding:11px 14px; border-radius:14px;
+      color:#fff; text-decoration:none; font-size:14px; font-weight:700;
+      background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12);
     }}
     h1 {{ margin: 18px 0 10px; font-size: clamp(36px, 6vw, 68px); line-height: .98; letter-spacing: -.04em; }}
     .hero-grid {{ display: grid; grid-template-columns: 1.45fr .95fr; gap: 26px; margin-top: 18px; align-items: end; }}
@@ -250,8 +256,13 @@ def render(snapshot: dict) -> str:
 <body>
   <div class="shell">
     <section class="hero">
-      <div class="eyebrow">A股每日市场快照 · 最近交易日 {escape_html(date_text)}</div>
-      <h1>{escape_html(summary.get("market_state", "市场快照"))}<br>{escape_html(summary.get("focus_direction", ""))}</h1>
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">A股每日市场快照 · 最近交易日 {escape_html(date_text)}</div>
+          <h1>{escape_html(summary.get("market_state", "市场快照"))}<br>{escape_html(summary.get("focus_direction", ""))}</h1>
+        </div>
+        <a class="nav-link" href="./realtime.html">查看实时面板</a>
+      </div>
       <div class="hero-grid">
         <div class="summary">{escape_html(hero_line)}</div>
         <div class="hero-side">

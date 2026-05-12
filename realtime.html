@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A股实时数据面板</title>
+  <style>
+    :root {
+      --bg: #0d1726;
+      --panel: rgba(17, 28, 45, .82);
+      --panel-strong: rgba(13, 23, 38, .92);
+      --line: rgba(255, 255, 255, .08);
+      --text: #edf3ff;
+      --muted: #8ea3c1;
+      --red: #ff5f57;
+      --green: #26b36c;
+      --gold: #e9c46a;
+      --blue: #65b7ff;
+      --shadow: 0 22px 60px rgba(0, 0, 0, .35);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "SF Pro Display", "PingFang SC", "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,95,87,.15), transparent 24%),
+        radial-gradient(circle at top right, rgba(101,183,255,.14), transparent 28%),
+        linear-gradient(180deg, #0a1320 0%, #0e1828 48%, #111c2d 100%);
+    }
+
+    .shell {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .hero {
+      padding: 30px;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(18,32,52,.95), rgba(11,59,80,.92)),
+        linear-gradient(180deg, #15243c, #10263d);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      color: #b8cbdf;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.04);
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(34px, 5vw, 62px);
+      letter-spacing: -.05em;
+      line-height: .98;
+    }
+
+    .hero-summary {
+      max-width: 920px;
+      color: #d7e5f7;
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .ghost-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #d8e7fb;
+      font-weight: 700;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #ff6d63, #cf453d);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(207,69,61,.28);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      letter-spacing: -.03em;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .metric .k {
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .metric .v {
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: -.04em;
+      font-weight: 800;
+    }
+
+    .metric .hint {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .up { color: var(--red); }
+    .down { color: var(--green); }
+    .flat { color: var(--gold); }
+
+    .status-line {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: #dce9fb;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 0 6px rgba(101,183,255,.12);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      70% { transform: scale(1.25); opacity: .5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .news-list, .theme-list, .sector-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .news-item, .theme-item, .sector-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .news-head, .theme-head, .sector-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(233,196,106,.12);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .sentiment-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .sentiment-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f07a70, #ff5f57);
+    }
+
+    .ladder {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ladder-row {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .ladder-badge {
+      border-radius: 18px;
+      padding: 14px 10px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(255,95,87,.2), rgba(101,183,255,.18));
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .ladder-badge strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .ladder-badge span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mono {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.08);
+    }
+
+    @media (max-width: 1080px) {
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">A股实时数据面板</div>
+          <h1>盘中快讯 + 最近交易日全景底板</h1>
+          <div class="hero-summary" id="hero-summary">
+            正在拉取今天的实时快讯与最近一个交易日的完整快照。
+          </div>
+        </div>
+        <div class="toolbar">
+          <a class="ghost-link" href="./index.html">查看日报页</a>
+          <button class="button" id="refresh-btn">立即刷新</button>
+          <div class="meta" id="refresh-meta">准备中…</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card span-12">
+        <h2>盘中状态</h2>
+        <div class="sub">如果盘后完整快照尚未更新，这里优先展示今天的实时信息</div>
+        <div class="status-line">
+          <span class="dot"></span>
+          <span id="live-status">等待实时数据…</span>
+        </div>
+      </article>
+
+      <article class="card span-12">
+        <h2>核心指标</h2>
+        <div class="sub">指数快照来自实时快讯文本解析，情绪指标来自最近交易日完整快照</div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="k">上证指数</div>
+            <div class="v mono" id="metric-sh">--</div>
+            <div class="hint" id="metric-sh-level">--</div>
+          </div>
+          <div class="metric">
+            <div class="k">深证成指</div>
+            <div class="v mono" id="metric-sz">--</div>
+            <div class="hint" id="metric-sz-level">--</div>
+          </div>
+          <div class="metric">
+            <div class="k">创业板指</div>
+            <div class="v mono" id="metric-cyb">--</div>
+            <div class="hint" id="metric-cyb-level">--</div>
+          </div>
+          <div class="metric">
+            <div class="k">赚钱效应</div>
+            <div class="v mono" id="metric-sentiment">--</div>
+            <div class="hint" id="metric-sentiment-label">--</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-7">
+        <h2>实时快讯</h2>
+        <div class="sub">自动刷新，优先展示今天的盘中焦点</div>
+        <div class="news-list" id="news-list">
+          <div class="empty">正在加载实时快讯…</div>
+        </div>
+      </article>
+
+      <article class="card span-5">
+        <h2>今日盘面摘要</h2>
+        <div class="sub">从实时快讯里提取出的盘中线索</div>
+        <div class="news-list" id="live-highlights">
+          <div class="empty">正在生成摘要…</div>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>热门题材底板</h2>
+        <div class="sub" id="theme-date">最近交易日快照</div>
+        <div class="theme-list" id="theme-list">
+          <div class="empty">正在加载题材数据…</div>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>行业强弱底板</h2>
+        <div class="sub" id="sector-date">最近交易日快照</div>
+        <div class="sector-list" id="sector-list">
+          <div class="empty">正在加载行业数据…</div>
+        </div>
+      </article>
+
+      <article class="card span-5">
+        <h2>情绪温度</h2>
+        <div class="sub">完整快照更新前，作为当日判断底板使用</div>
+        <div style="font-size:56px;font-weight:800;letter-spacing:-.05em" id="sentiment-display">--</div>
+        <div class="status-line" style="margin-top:6px">
+          <span id="sentiment-text">等待快照…</span>
+        </div>
+        <div class="sentiment-bar">
+          <div class="sentiment-fill" id="sentiment-fill" style="width:0%"></div>
+        </div>
+        <div class="metric-grid" style="margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))">
+          <div class="metric">
+            <div class="k">涨停</div>
+            <div class="v mono" id="limit-up">--</div>
+          </div>
+          <div class="metric">
+            <div class="k">炸板</div>
+            <div class="v mono" id="fried">--</div>
+          </div>
+          <div class="metric">
+            <div class="k">跌停</div>
+            <div class="v mono" id="limit-down">--</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-7">
+        <h2>连板天梯底板</h2>
+        <div class="sub" id="ladder-date">最近交易日快照</div>
+        <div class="ladder" id="ladder-list">
+          <div class="empty">正在加载连板数据…</div>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    const NEWS_API = "https://hhxg.top/api/news?limit=12";
+    const SNAPSHOT_API = "https://hhxg.top/static/data/assistant/skill_snapshot.json";
+    const REFRESH_MS = 60 * 1000;
+
+    const els = {
+      heroSummary: document.getElementById("hero-summary"),
+      refreshBtn: document.getElementById("refresh-btn"),
+      refreshMeta: document.getElementById("refresh-meta"),
+      liveStatus: document.getElementById("live-status"),
+      metricSh: document.getElementById("metric-sh"),
+      metricShLevel: document.getElementById("metric-sh-level"),
+      metricSz: document.getElementById("metric-sz"),
+      metricSzLevel: document.getElementById("metric-sz-level"),
+      metricCyb: document.getElementById("metric-cyb"),
+      metricCybLevel: document.getElementById("metric-cyb-level"),
+      metricSentiment: document.getElementById("metric-sentiment"),
+      metricSentimentLabel: document.getElementById("metric-sentiment-label"),
+      newsList: document.getElementById("news-list"),
+      liveHighlights: document.getElementById("live-highlights"),
+      themeDate: document.getElementById("theme-date"),
+      themeList: document.getElementById("theme-list"),
+      sectorDate: document.getElementById("sector-date"),
+      sectorList: document.getElementById("sector-list"),
+      sentimentDisplay: document.getElementById("sentiment-display"),
+      sentimentText: document.getElementById("sentiment-text"),
+      sentimentFill: document.getElementById("sentiment-fill"),
+      limitUp: document.getElementById("limit-up"),
+      fried: document.getElementById("fried"),
+      limitDown: document.getElementById("limit-down"),
+      ladderDate: document.getElementById("ladder-date"),
+      ladderList: document.getElementById("ladder-list"),
+    };
+
+    function esc(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function fmtTime(input) {
+      if (!input) return "--";
+      return input.replace("T", " ").slice(0, 16);
+    }
+
+    function classify(v) {
+      if (v > 0) return "up";
+      if (v < 0) return "down";
+      return "flat";
+    }
+
+    function renderMetric(elValue, elHint, data) {
+      if (!data) {
+        elValue.textContent = "--";
+        elValue.className = "v mono";
+        elHint.textContent = "--";
+        return;
+      }
+      elValue.textContent = `${data.change > 0 ? "+" : ""}${data.change.toFixed(2)}%`;
+      elValue.className = `v mono ${classify(data.change)}`;
+      elHint.textContent = `${data.level.toFixed(3)} 点`;
+    }
+
+    function parseIndices(items) {
+      const joined = items.map(item => item.title || "").join("\n");
+      const patterns = [
+        { key: "sh", regex: /上证指数跌([0-9.]+)%.*?现报([0-9.]+)点|上证指数涨([0-9.]+)%.*?现报([0-9.]+)点/ },
+        { key: "sz", regex: /深证成指跌([0-9.]+)%.*?现报([0-9.]+)点|深证成指涨([0-9.]+)%.*?现报([0-9.]+)点/ },
+        { key: "cyb", regex: /创业板指跌([0-9.]+)%.*?现报([0-9.]+)点|创业板指涨([0-9.]+)%.*?现报([0-9.]+)点/ }
+      ];
+      const result = {};
+      for (const { key, regex } of patterns) {
+        const m = joined.match(regex);
+        if (!m) continue;
+        if (m[1] && m[2]) result[key] = { change: -Number(m[1]), level: Number(m[2]) };
+        if (m[3] && m[4]) result[key] = { change: Number(m[3]), level: Number(m[4]) };
+      }
+      return result;
+    }
+
+    function renderNews(items) {
+      if (!items.length) {
+        els.newsList.innerHTML = '<div class="empty">暂无实时快讯。</div>';
+        return;
+      }
+      els.newsList.innerHTML = items.map(item => `
+        <div class="news-item">
+          <div class="news-head">
+            <strong>${esc((item.title || "").slice(0, 24))}${(item.title || "").length > 24 ? "…" : ""}</strong>
+            <span class="tag">${esc(item.cat || "快讯")}</span>
+          </div>
+          <div class="meta">${fmtTime(item.t)}</div>
+          <div>${esc(item.title || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    function buildHighlights(items) {
+      const candidates = items
+        .filter(item => /指数|午评|涨停|下跌|半导体|证券|消费电子|光纤|恒瑞医药/.test(item.title || ""))
+        .slice(0, 4);
+
+      if (!candidates.length) {
+        els.liveHighlights.innerHTML = '<div class="empty">暂时还没有足够的盘中线索。</div>';
+        return;
+      }
+
+      els.liveHighlights.innerHTML = candidates.map(item => `
+        <div class="news-item">
+          <div class="news-meta">${fmtTime(item.t)} · ${esc(item.cat || "盘中")}</div>
+          ${esc(item.title || "")}
+        </div>
+      `).join("");
+    }
+
+    function renderThemes(snapshot) {
+      const themes = snapshot.hot_themes || [];
+      els.themeDate.textContent = `最近交易日快照 · ${snapshot.date || "--"}`;
+      if (!themes.length) {
+        els.themeList.innerHTML = '<div class="empty">暂无题材数据。</div>';
+        return;
+      }
+      els.themeList.innerHTML = themes.slice(0, 5).map(theme => {
+        const leaders = (theme.top_stocks || []).slice(0, 2).map(item => item.name).join("、");
+        const cls = Number(theme.net_yi || 0) >= 0 ? "up" : "down";
+        return `
+          <div class="theme-item">
+            <div class="theme-head">
+              <strong>${esc(theme.name || "")}</strong>
+              <span class="tag ${cls}">${theme.limitup_count || 0} 家涨停</span>
+            </div>
+            <div class="meta ${cls}">${Number(theme.net_yi || 0) > 0 ? "+" : ""}${theme.net_yi || 0} 亿</div>
+            <div style="margin-top:8px;color:var(--muted)">龙头：${esc(leaders || "暂无")}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderSectors(snapshot) {
+      const sectorGroup = (snapshot.sectors || [])[0] || {};
+      const strong = sectorGroup.strong || [];
+      const weak = sectorGroup.weak || [];
+      els.sectorDate.textContent = `最近交易日快照 · ${snapshot.date || "--"}`;
+      els.sectorList.innerHTML = `
+        ${strong.slice(0, 3).map(item => `
+          <div class="sector-item">
+            <div class="sector-head">
+              <strong>${esc(item.name || "")}</strong>
+              <span class="up">${item.net_yi > 0 ? "+" : ""}${item.net_yi || 0}亿</span>
+            </div>
+            <div style="color:var(--muted)">领涨：${esc(item.leader || "暂无")} · 偏离 ${item.bias_pct || 0}%</div>
+          </div>
+        `).join("")}
+        ${weak.slice(0, 3).map(item => `
+          <div class="sector-item">
+            <div class="sector-head">
+              <strong>${esc(item.name || "")}</strong>
+              <span class="down">${item.net_yi > 0 ? "+" : ""}${item.net_yi || 0}亿</span>
+            </div>
+            <div style="color:var(--muted)">领跌：${esc(item.leader || "暂无")} · 偏离 ${item.bias_pct || 0}%</div>
+          </div>
+        `).join("")}
+      `;
+    }
+
+    function renderSentiment(snapshot) {
+      const market = snapshot.market || {};
+      els.metricSentiment.textContent = `${market.sentiment_index ?? "--"}%`;
+      els.metricSentimentLabel.textContent = snapshot.date ? `${snapshot.date} · ${market.sentiment_label || "--"}` : "--";
+      els.sentimentDisplay.textContent = `${market.sentiment_index ?? "--"}%`;
+      els.sentimentText.textContent = `${market.sentiment_label || "--"} · ${snapshot.comparison?.trend_label || "最近交易日情绪区间"}`;
+      els.sentimentFill.style.width = `${market.sentiment_index || 0}%`;
+      els.limitUp.textContent = market.limit_up ?? "--";
+      els.fried.textContent = market.fried ?? "--";
+      els.limitDown.textContent = market.limit_down ?? "--";
+      els.ladderDate.textContent = `最近交易日快照 · ${snapshot.date || "--"}`;
+    }
+
+    function renderLadder(snapshot) {
+      const levels = snapshot.ladder_detail?.levels || [];
+      if (!levels.length) {
+        els.ladderList.innerHTML = '<div class="empty">暂无连板数据。</div>';
+        return;
+      }
+      els.ladderList.innerHTML = levels.slice(0, 4).map(level => {
+        const winners = (level.stocks || []).filter(item => item.is_success !== false).slice(0, 6);
+        const names = winners.map(item => item.name).join(" / ");
+        return `
+          <div class="ladder-row">
+            <div class="ladder-badge">
+              <strong>${level.boards || 0}</strong>
+              <span>${level.count || 0} 只晋级</span>
+            </div>
+            <div class="news-item">
+              <div class="news-meta">晋级率参考 ${snapshot.ladder_detail?.lb_rates_map?.[level.boards] || "--"}</div>
+              ${esc(names || "暂无")}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function loadRealtimeDashboard() {
+      els.refreshMeta.textContent = "刷新中…";
+      try {
+        const [newsResp, snapshotResp] = await Promise.all([
+          fetch(NEWS_API, { cache: "no-store" }),
+          fetch(SNAPSHOT_API, { cache: "no-store" })
+        ]);
+        const newsJson = await newsResp.json();
+        const snapshot = await snapshotResp.json();
+        const items = newsJson?.data?.items || [];
+
+        renderNews(items);
+        buildHighlights(items);
+        renderThemes(snapshot);
+        renderSectors(snapshot);
+        renderSentiment(snapshot);
+        renderLadder(snapshot);
+
+        const indices = parseIndices(items);
+        renderMetric(els.metricSh, els.metricShLevel, indices.sh);
+        renderMetric(els.metricSz, els.metricSzLevel, indices.sz);
+        renderMetric(els.metricCyb, els.metricCybLevel, indices.cyb);
+
+        const latestTime = items[0]?.t || snapshot.meta?.update_time;
+        const latestTradingDate = snapshot.date || "--";
+        els.liveStatus.textContent = items.length
+          ? `实时快讯已更新到 ${fmtTime(latestTime)}；完整快照最新交易日为 ${latestTradingDate}`
+          : `当前没有拿到实时快讯，完整快照最新交易日为 ${latestTradingDate}`;
+
+        els.heroSummary.textContent = items[0]?.title
+          ? `盘中最新：${items[0].title}。完整快照仍以 ${latestTradingDate} 为最近交易日底板，用来补全题材、行业、连板与情绪结构。`
+          : `当前以 ${latestTradingDate} 的完整快照为主，同时轮询实时快讯。`;
+
+        els.refreshMeta.textContent = `上次刷新：${fmtTime(new Date().toISOString())}`;
+      } catch (error) {
+        console.error(error);
+        els.refreshMeta.textContent = "刷新失败";
+        els.liveStatus.textContent = "接口暂时不可用，请稍后再试。";
+        els.newsList.innerHTML = `<div class="empty">加载失败：${esc(error.message || String(error))}</div>`;
+      }
+    }
+
+    els.refreshBtn.addEventListener("click", loadRealtimeDashboard);
+    loadRealtimeDashboard();
+    setInterval(loadRealtimeDashboard, REFRESH_MS);
+  </script>
+</body>
+</html>
