@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A股每日市场快照 · 2026-11-05</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --paper: rgba(255,255,255,.72);
+      --text: #18222f;
+      --muted: #687483;
+      --line: rgba(24,34,47,.1);
+      --red: #d64b46;
+      --green: #1c8c63;
+      --gold: #b7822d;
+      --teal: #1d6f74;
+      --shadow: 0 24px 60px rgba(30, 41, 59, .12);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display", "PingFang SC", "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(214,75,70,.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(29,111,116,.15), transparent 30%),
+        linear-gradient(180deg, #f8f3ea 0%, #f2ede4 52%, #ece6dc 100%);
+    }
+    .shell { max-width: 1380px; margin: 0 auto; padding: 28px; }
+    .hero {
+      overflow: hidden; padding: 34px; border-radius: 30px; color: #f7f8fa;
+      background: linear-gradient(135deg, rgba(27,53,87,.96), rgba(19,78,94,.92));
+      box-shadow: var(--shadow);
+    }
+    .hero-top { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; flex-wrap:wrap; }
+    .eyebrow {
+      display: inline-flex; gap: 10px; align-items: center; padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,.18); border-radius: 999px; font-size: 13px;
+      letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.82);
+    }
+    .nav-link {
+      display:inline-flex; align-items:center; padding:11px 14px; border-radius:14px;
+      color:#fff; text-decoration:none; font-size:14px; font-weight:700;
+      background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12);
+    }
+    h1 { margin: 18px 0 10px; font-size: clamp(36px, 6vw, 68px); line-height: .98; letter-spacing: -.04em; }
+    .hero-grid { display: grid; grid-template-columns: 1.45fr .95fr; gap: 26px; margin-top: 18px; align-items: end; }
+    .summary { font-size: 20px; line-height: 1.65; color: rgba(247,248,250,.92); }
+    .hero-side, .metric-strip, .grid, .stat-list, .dist, .heat-list, .news-list, .ladder-levels { display: grid; gap: 12px; }
+    .metric-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .metric-chip, .hero-note, .card, .stat, .heat-item, .sector-box, .board-list, .news-item {
+      border: 1px solid rgba(255,255,255,.12); border-radius: 18px;
+    }
+    .metric-chip, .hero-note { padding: 16px 18px; background: rgba(255,255,255,.09); }
+    .metric-chip .label, .hero-note .label { display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.7); margin-bottom:8px; }
+    .metric-chip strong { font-size: 28px; }
+    .grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+    .card { background: var(--paper); border-color: rgba(255,255,255,.6); box-shadow: var(--shadow); padding: 24px; }
+    .card h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -.03em; }
+    .card .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+    .span-5 { grid-column: span 5; } .span-6 { grid-column: span 6; } .span-7 { grid-column: span 7; } .span-12 { grid-column: span 12; }
+    .gauge-wrap { display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: center; }
+    .gauge {
+      width: 210px; height: 210px; border-radius: 50%; display: grid; place-items: center;
+      background: radial-gradient(closest-side, rgba(255,255,255,.92) 71%, transparent 72% 100%),
+                  conic-gradient(from 220deg, var(--teal) 0 calc(88.9 * 1%), rgba(24,34,47,.08) 0 100%);
+      margin: 0 auto;
+    }
+    .gauge-value { text-align: center; } .gauge-value strong { display:block; font-size:46px; line-height:1; letter-spacing:-.05em; } .gauge-value span { color: var(--muted); font-size:14px; }
+    .stat-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat { padding: 14px 16px; background: rgba(255,255,255,.58); border-color: var(--line); }
+    .stat .k { color: var(--muted); font-size: 13px; margin-bottom: 8px; } .stat .v { font-size: 28px; font-weight: 700; letter-spacing: -.03em; }
+    .bar-row { display:grid; grid-template-columns:70px 1fr 64px; gap:12px; align-items:center; font-size:14px; }
+    .track { height:12px; border-radius:999px; background:rgba(24,34,47,.08); overflow:hidden; }
+    .fill { height:100%; border-radius:inherit; background:linear-gradient(90deg, #d17752, #d64b46); }
+    .fill.down { background:linear-gradient(90deg, #2f8f68, #1c8c63); }
+    .heat-item, .sector-box, .board-list, .news-item { padding: 16px 18px; background: rgba(255,255,255,.58); border-color: var(--line); }
+    .heat-head, .ladder-head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; margin-bottom:8px; }
+    .heat-head strong { font-size:20px; } .pill { display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; font-size:12px; background:rgba(183,130,45,.12); color:var(--gold); font-weight:700; }
+    .tags { color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .sector-columns { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .sector-box h3 { margin:0 0 12px; font-size:18px; }
+    .sector-row { display:grid; grid-template-columns:1fr 70px 80px; gap:10px; padding:10px 0; border-top:1px solid rgba(24,34,47,.08); font-size:14px; }
+    .sector-row:first-of-type { border-top:0; }
+    .pos { color: var(--red); font-weight:700; } .neg { color: var(--green); font-weight:700; }
+    .ladder-top { font-size:16px; color:var(--muted); } .ladder-top strong { color:var(--text); font-size:34px; letter-spacing:-.04em; margin-right:8px; }
+    .ladder-level { display:grid; grid-template-columns:96px 1fr; gap:14px; align-items:start; }
+    .board { padding:14px 10px; border-radius:18px; background:linear-gradient(180deg, rgba(27,53,87,.95), rgba(43,90,121,.92)); color:#fff; text-align:center; }
+    .board strong { display:block; font-size:30px; line-height:1; } .board span { font-size:12px; color:rgba(255,255,255,.76); }
+    .table { width:100%; border-collapse:collapse; font-size:14px; }
+    .table th, .table td { text-align:left; padding:12px 10px; border-top:1px solid rgba(24,34,47,.08); }
+    .table th { color:var(--muted); font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; border-top:0; }
+    .news-meta { color:var(--muted); font-size:12px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.06em; }
+    .foot { margin-top: 18px; color: var(--muted); font-size: 13px; line-height: 1.7; text-align: center; }
+    @media (max-width: 1080px) {
+      .hero-grid, .gauge-wrap, .sector-columns { grid-template-columns: 1fr; }
+      .span-5, .span-6, .span-7 { grid-column: span 12; }
+      .metric-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">A股每日市场快照 · 最近交易日 2026-11-05</div>
+          <h1>赚钱效应 88.9%（强）<br>IT服务、文化传媒、电池 方向资金集中</h1>
+        </div>
+        <a class="nav-link" href="./realtime.html">查看实时面板</a>
+      </div>
+      <div class="hero-grid">
+        <div class="summary">赚钱效应 88.9%（强），IT服务、文化传媒、电池 方向资金集中，AI智能体、小米概念、抖音概念(字节概念) 等题材活跃，游资净买入 5亿，利欧股份领涨</div>
+        <div class="hero-side">
+          <div class="metric-strip">
+            <div class="metric-chip"><span class="label">涨停</span><strong>84</strong></div>
+            <div class="metric-chip"><span class="label">炸板</span><strong>48</strong></div>
+            <div class="metric-chip"><span class="label">跌停</span><strong>0</strong></div>
+          </div>
+          <div class="hero-note"><span class="label">更新</span>2026-11-06 15:18:01</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card span-5">
+        <h2>市场温度</h2>
+        <div class="sub">情绪强度、结构差值与晋级率</div>
+        <div class="gauge-wrap">
+          <div class="gauge">
+            <div class="gauge-value"><strong>88.9</strong><span>赚钱效应指数</span></div>
+          </div>
+          <div class="stat-list">
+            <div class="stat"><div class="k">情绪标签</div><div class="v">强</div></div>
+            <div class="stat"><div class="k">结构差值</div><div class="v">4.4</div></div>
+            <div class="stat"><div class="k">晋级率</div><div class="v">17%</div></div>
+            <div class="stat"><div class="k">情绪区间</div><div class="v">近7日中位区间</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-7">
+        <h2>涨跌分布</h2>
+        <div class="sub">5377 只个股的日内分布结构</div>
+        <div class="dist">
+          <div class="bar-row"><span>小涨</span><div class="track"><div class="fill" style="width:57.7%"></div></div><strong>3100</strong></div><div class="bar-row"><span>中涨</span><div class="track"><div class="fill" style="width:26.5%"></div></div><strong>1426</strong></div><div class="bar-row"><span>大涨</span><div class="track"><div class="fill" style="width:4.7%"></div></div><strong>255</strong></div><div class="bar-row"><span>小跌</span><div class="track"><div class="fill down" style="width:9.4%"></div></div><strong>503</strong></div><div class="bar-row"><span>中跌</span><div class="track"><div class="fill down" style="width:1.4%"></div></div><strong>76</strong></div><div class="bar-row"><span>大跌</span><div class="track"><div class="fill down" style="width:0.3%"></div></div><strong>17</strong></div>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>热门题材</h2>
+        <div class="sub">按涨停家数与资金净流入排序</div>
+        <div class="heat-list">
+          
+          <div class="heat-item">
+            <div class="heat-head"><strong>AI智能体</strong><span class="pill">13 家涨停 · 2.81 亿</span></div>
+            <div class="tags">龙头：利欧股份、吉视传媒 · 关联：AIGC概念、数据要素、小米概念</div>
+          </div>
+          <div class="heat-item">
+            <div class="heat-head"><strong>小米概念</strong><span class="pill">13 家涨停 · 1.78 亿</span></div>
+            <div class="tags">龙头：利欧股份、贝特利 · 关联：AI智能体、虚拟现实、智能穿戴</div>
+          </div>
+          <div class="heat-item">
+            <div class="heat-head"><strong>抖音概念(字节概念)</strong><span class="pill">11 家涨停 · 1.62 亿</span></div>
+            <div class="tags">龙头：利欧股份、福石控股 · 关联：腾讯概念、阿里巴巴概念、乡村振兴</div>
+          </div>
+          <div class="heat-item">
+            <div class="heat-head"><strong>腾讯概念</strong><span class="pill">11 家涨停 · 1.7 亿</span></div>
+            <div class="tags">龙头：利欧股份、福石控股 · 关联：抖音概念(字节概念)、小米概念、AI智能体</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>行业强弱</h2>
+        <div class="sub">净流入强势与弱势板块</div>
+        <div class="sector-columns">
+          <div class="sector-box">
+            <h3>强势行业</h3>
+            <div class="sector-row"><strong>IT服务</strong><span class="pos">+23亿</span><span>青云科技</span></div>
+<div class="sector-row"><strong>文化传媒</strong><span class="pos">+22亿</span><span>福石控股</span></div>
+<div class="sector-row"><strong>电池</strong><span class="pos">+20亿</span><span>鹏辉能源</span></div>
+<div class="sector-row"><strong>光伏设备</strong><span class="pos">+16亿</span><span>酉立智能</span></div>
+<div class="sector-row"><strong>消费电子</strong><span class="pos">+14亿</span><span>精研科技</span></div>
+          </div>
+          <div class="sector-box">
+            <h3>弱势行业</h3>
+            <div class="sector-row"><strong>煤炭开采加工</strong><span class="neg">-20亿</span><span>华电能源</span></div>
+<div class="sector-row"><strong>油气开采及服务</strong><span class="neg">-6亿</span><span>贝肯能源</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-7">
+        <div class="ladder-head">
+          <div>
+            <h2>连板天梯</h2>
+            <div class="sub">最高连板 4 板，龙头为 闽发铝业</div>
+          </div>
+          <div class="ladder-top"><strong>84</strong> 涨停总数</div>
+        </div>
+        <div class="ladder-levels">
+          
+          <div class="ladder-level">
+            <div class="board"><strong>4</strong><span>2 只晋级</span></div>
+            <div class="board-list">闽发铝业 / 浙文影业</div>
+          </div>
+          <div class="ladder-level">
+            <div class="board"><strong>3</strong><span>2 只晋级</span></div>
+            <div class="board-list">鲁阳节能 / 永臻股份</div>
+          </div>
+          <div class="ladder-level">
+            <div class="board"><strong>2</strong><span>17 只晋级</span></div>
+            <div class="board-list">盛达资源 / 南矿集团 / 金 螳 螂 / 中利集团 / 顺灏股份 / 海源复材 / 新亚制程 / 征和工业</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-5">
+        <h2>游资龙虎榜</h2>
+        <div class="sub">龙虎榜总净买入 4.97 亿</div>
+        <table class="table">
+          <thead><tr><th>个股</th><th>净买入</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td>利欧股份</td><td class="pos">1.42亿</td><td>35.4%</td></tr><tr><td>精研科技</td><td class="pos">1.13亿</td><td>29.9%</td></tr><tr><td>睿创微纳</td><td class="pos">0.99亿</td><td>10.1%</td></tr><tr><td>吉视传媒</td><td class="pos">0.85亿</td><td>74.0%</td></tr><tr><td>金刚光伏</td><td class="pos">0.58亿</td><td>40.8%</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card span-12">
+        <h2>焦点新闻</h2>
+        <div class="sub">市场交易叙事与盘后线索</div>
+        <div class="news-list">
+          
+          <div class="news-item">
+            <div class="news-meta">2026-11-06 · 15: · 市场</div>
+            【国债期货收盘】 30年期主力合约涨0.41%， 10年期主力合约涨0.10%， 5年期主力合约涨0.06%， 2年期主力合约基本持平。
+          </div>
+
+          <div class="news-item">
+            <div class="news-meta">2026-11-06 · 15: · 市场</div>
+            【11月6日沪深两市涨停分析】创业板指缩量跌3.96%，超4700股下跌，科技股领跌、银行股逆势上涨。浙文影业、闽发铝业5连板，一图看懂&gt;&gt;
+          </div>
+
+          <div class="news-item">
+            <div class="news-meta">2026-11-06 · 15: · 市场</div>
+            【机构：第四季面板需求走弱，电视、显示器及笔电面板11月价格预估持平】11月5日，TrendForce集邦咨询公布了11月面板价格趋势预测：2026年11月，电…
+          </div>
+
+          <div class="news-item">
+            <div class="news-meta">2026-11-06 · 15: · 焦点</div>
+            【11月6日涨停分析】财联社11月6日电，今日全市场共32股涨停，连板股总数11只，14股封板未遂，封板率为70%（不含ST股、退市股）。焦点股方面，“羊”字辈…
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="foot">
+      数据日期：2026-11-05（最近交易日） · 更新时间：2026-11-06 15:18:01
+    </div>
+  </div>
+</body>
+</html>
